@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Nilai Ijazah</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+  html, body { height: 100%; }
+  body {
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: #0f1419;
+    color: #e8eaed;
+  }
+  .font-display { font-family: 'Fraunces', Georgia, serif; }
+
+  .app-bg {
+    background:
+      radial-gradient(circle at 15% 10%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(100, 150, 220, 0.06) 0%, transparent 45%),
+      linear-gradient(180deg, #0f1419 0%, #151b23 100%);
+  }
+
+  .card {
+    background: linear-gradient(145deg, #1a2029 0%, #151b23 100%);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 12px;
+  }
+
+  .card-elevated {
+    background: linear-gradient(145deg, #1e252f 0%, #181e26 100%);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(212, 175, 55, 0.05);
+  }
+
+  .tab-btn {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .tab-btn.active {
+    color: #d4af37;
+  }
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  }
+  .tab-btn:not(.active):hover {
+    color: #e8c969;
+  }
+
+  input, select {
+    transition: all 0.2s ease;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+    color: #0f1419;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #e8c969 0%, #c9a528 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-danger {
+    background: rgba(220, 80, 80, 0.12);
+    color: #f28585;
+    border: 1px solid rgba(220, 80, 80, 0.3);
+    transition: all 0.2s ease;
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: rgba(220, 80, 80, 0.2);
+    color: #ff9b9b;
+  }
+
+  .btn-ghost {
+    background: rgba(212, 175, 55, 0.08);
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    transition: all 0.2s ease;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: rgba(212, 175, 55, 0.15);
+  }
+
+  .pill {
+    background: rgba(212, 175, 55, 0.1);
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+  }
+
+  .grade-badge {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tab-panel { animation: fadeIn 0.3s ease; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    border-top-color: #d4af37;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .toast {
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.5s forwards;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0f1419; }
+  ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.25); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.4); }
+
+  table { border-collapse: collapse; }
+  th, td { border-bottom: 1px solid rgba(212, 175, 55, 0.1); }
+
+  .empty-state {
+    border: 1.5px dashed rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+  }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full"><!-- Login Screen -->
+  <div id="login-screen" class="w-full h-full overflow-auto">
+   <div class="app-bg w-full h-full flex items-center justify-center p-4">
+    <div class="card-elevated rounded-xl p-8 w-full max-w-sm shadow-2xl">
+     <div class="flex items-center justify-center gap-2 mb-6">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);">
+       <i data-lucide="graduation-cap" style="width:24px;height:24px;color:#0f1419;"></i>
+      </div>
+      <div>
+       <h1 class="font-display text-2xl font-bold text-white">Sistem Rekap Nilai Ijazah MTs Al - Mahdi Pabuaran</h1>
+      </div>
+     </div>
+     <form id="form-login" class="space-y-4">
+      <div><label for="login-username" class="block text-xs font-medium mb-1.5" style="color:#9ca3af">Username</label> <input id="login-username" type="text" placeholder="admin atau username guru" required class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+      </div>
+      <div><label for="login-password" class="block text-xs font-medium mb-1.5" style="color:#9ca3af">Password</label> <input id="login-password" type="password" placeholder="Masukkan password" required class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+      </div>
+      <div id="login-error" class="hidden text-xs px-3 py-2 rounded-lg" style="background:rgba(220,80,80,0.1);color:#f28585;border:1px solid rgba(220,80,80,0.3)"></div><button type="submit" id="btn-login" class="btn-primary w-full px-6 py-3 rounded-lg flex items-center justify-center gap-2 font-medium"> <i data-lucide="log-in" style="width:18px;height:18px;"></i> <span>Masuk</span> </button>
+     </form>
+    </div>
+   </div>
+  </div><!-- Main App Screen -->
+  <main id="main-screen" class="app-bg w-full h-full overflow-auto hidden">
+   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <header class="mb-8">
+     <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-3">
+       <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);">
+        <i data-lucide="graduation-cap" style="width:22px;height:22px;color:#0f1419;"></i>
+       </div>
+       <div>
+        <div class="pill text-xs px-3 py-1 rounded-full font-medium tracking-wide uppercase" style="display:none">
+         SKHUN Calculator
+        </div>
+        <div id="current-user-info" class="text-xs" style="color:#9ca3af"></div>
+        <div id="teacher-subjects-info" class="text-xs mt-1" style="color:#d4af37;display:none;line-height:1.4"></div>
+       </div>
+      </div><button id="btn-logout" class="btn-ghost px-4 py-2 rounded-lg text-sm flex items-center gap-2"> <i data-lucide="log-out" style="width:16px;height:16px;"></i> <span>Logout</span> </button>
+     </div>
+     <h1 id="app-title" class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">Kalkulator Nilai Ijazah</h1>
+     <p id="app-subtitle" class="text-sm sm:text-base mt-2" style="color:#9ca3af;display:none">Hitung nilai ijazah otomatis: Semester 1–5 (18% tiap semester) + UM (10%)</p>
+    </header>
+    <nav id="nav-tabs" class="card-elevated rounded-xl mb-6 overflow-x-auto">
+     <div class="flex min-w-max" role="tablist" aria-label="Navigasi Tab"><button class="tab-btn active flex items-center gap-2 px-5 py-4 text-sm font-medium" data-tab="subjects" role="tab"><i data-lucide="book-open" style="width:16px;height:16px;"></i><span>Mata Pelajaran</span><span id="count-subjects" class="pill text-xs px-2 py-0.5 rounded-full">0</span></button> <button class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium" style="color:#9ca3af" data-tab="students" role="tab"><i data-lucide="users" style="width:16px;height:16px;"></i><span>Siswa</span><span id="count-students" class="pill text-xs px-2 py-0.5 rounded-full">0</span></button> <button class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium" style="color:#9ca3af" data-tab="teachers" role="tab"><i data-lucide="user-check" style="width:16px;height:16px;"></i><span>Data Guru</span><span id="count-teachers" class="pill text-xs px-2 py-0.5 rounded-full">0</span></button> <button class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium" style="color:#9ca3af" data-tab="assign" role="tab"><i data-lucide="link" style="width:16px;height:16px;"></i><span>Kelola Mapel</span></button> <button class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium" style="color:#9ca3af" data-tab="input" role="tab"><i data-lucide="pencil-line" style="width:16px;height:16px;"></i><span>Input Nilai</span></button> <button class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium" style="color:#9ca3af" data-tab="recap" role="tab"><i data-lucide="table-2" style="width:16px;height:16px;"></i><span>Rekap</span></button> <button class="tab-btn flex items-center gap-2 px-5 py-4 text-sm font-medium" style="color:#9ca3af" data-tab="teacher-recap" role="tab"><i data-lucide="clipboard-check" style="width:16px;height:16px;"></i><span>Rekap Saya</span></button>
+     </div>
+    </nav><!-- SUBJECTS TAB -->
+    <section id="panel-subjects" class="tab-panel" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6 mb-5">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Tambah Mata Pelajaran</h2>
+      <form id="form-subject" class="flex flex-col sm:flex-row gap-3">
+       <input id="input-subject-name" type="text" placeholder="Contoh: Matematika" required maxlength="60" class="flex-1 bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500"><button type="submit" id="btn-add-subject" class="btn-primary px-6 py-3 rounded-lg flex items-center justify-center gap-2"><i data-lucide="plus" style="width:18px;height:18px;"></i><span>Tambah</span></button>
+      </form>
+     </div>
+     <div class="card-elevated rounded-xl p-5 sm:p-6">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Daftar Mapel</h2>
+      <div id="list-subjects" class="space-y-2"></div>
+     </div>
+    </section><!-- STUDENTS TAB -->
+    <section id="panel-students" class="tab-panel hidden" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6 mb-5">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Tambah Siswa</h2>
+      <form id="form-student" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+       <div>
+        <input id="input-student-name" type="text" placeholder="Nama siswa" required maxlength="80" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div>
+        <input id="input-student-nisn" type="text" placeholder="NISN" maxlength="20" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div>
+        <input id="input-student-kelas" type="text" placeholder="Contoh: IX-A" maxlength="20" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div class="sm:col-span-3">
+        <button type="submit" id="btn-add-student" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-lg flex items-center justify-center gap-2"><i data-lucide="user-plus" style="width:18px;height:18px;"></i><span>Tambah Siswa</span></button>
+       </div>
+      </form>
+     </div>
+     <div class="card-elevated rounded-xl p-5 sm:p-6">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Daftar Siswa</h2>
+      <div id="list-students" class="space-y-2"></div>
+     </div>
+    </section><!-- TEACHERS TAB -->
+    <section id="panel-teachers" class="tab-panel hidden" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6 mb-5">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Tambah Akun Guru</h2>
+      <form id="form-teacher" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+       <div>
+        <input id="input-teacher-name" type="text" placeholder="Nama guru" required maxlength="80" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div>
+        <input id="input-teacher-username" type="text" placeholder="Username unik" required maxlength="30" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div>
+        <input id="input-teacher-password" type="password" placeholder="Password" required maxlength="30" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div class="sm:col-span-3">
+        <button type="submit" id="btn-add-teacher" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-lg flex items-center justify-center gap-2"><i data-lucide="user-plus" style="width:18px;height:18px;"></i><span>Tambah Guru</span></button>
+       </div>
+      </form>
+     </div>
+     <div class="card-elevated rounded-xl p-5 sm:p-6">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Daftar Akun Guru</h2>
+      <div id="list-teachers" class="space-y-2"></div>
+     </div>
+    </section><!-- ASSIGN MAPEL TAB -->
+    <section id="panel-assign" class="tab-panel hidden" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6 mb-5">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Kelola Mata Pelajaran Guru</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+       <div>
+        <select id="select-teacher-assign" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white"><option value="" style="background:#151b23">— Pilih guru —</option></select>
+       </div>
+      </div>
+     </div>
+     <div id="assign-content" class="card-elevated rounded-xl p-5 sm:p-6"></div>
+    </section><!-- INPUT NILAI TAB -->
+    <section id="panel-input" class="tab-panel hidden" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6 mb-5">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Pilih Siswa &amp; Mata Pelajaran</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+       <div class="relative">
+        <input id="search-student" type="text" placeholder="Cari nama siswa..." class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 mb-2" style="display:none"> <select id="select-student" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white"><option value="" style="background:#151b23">— Pilih siswa —</option></select>
+        <div id="student-search-results" class="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto" style="display:none"></div>
+       </div>
+       <div>
+        <select id="select-subject" class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white"><option value="" style="background:#151b23">— Pilih mapel —</option></select>
+       </div>
+      </div>
+     </div>
+     <div id="score-form-wrap" class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+       <div class="lg:col-span-2 card-elevated rounded-xl p-5 sm:p-6">
+        <h2 class="font-display text-xl font-semibold text-white mb-1">Input Nilai</h2>
+        <p class="text-xs mb-5" style="color:#9ca3af">Masukkan nilai 0–100</p>
+        <form id="form-scores" class="space-y-4">
+         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div>
+           <label class="flex items-center justify-between text-xs font-medium mb-1.5" style="color:#9ca3af"><span>Semester 1</span><span class="pill text-[10px] px-1.5 py-0.5 rounded">18%</span></label><input data-key="sem1" type="number" min="0" max="100" step="0.01" placeholder="0-100" class="score-input w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500">
+          </div>
+          <div>
+           <label class="flex items-center justify-between text-xs font-medium mb-1.5" style="color:#9ca3af"><span>Semester 2</span><span class="pill text-[10px] px-1.5 py-0.5 rounded">18%</span></label><input data-key="sem2" type="number" min="0" max="100" step="0.01" placeholder="0-100" class="score-input w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500">
+          </div>
+          <div>
+           <label class="flex items-center justify-between text-xs font-medium mb-1.5" style="color:#9ca3af"><span>Semester 3</span><span class="pill text-[10px] px-1.5 py-0.5 rounded">18%</span></label><input data-key="sem3" type="number" min="0" max="100" step="0.01" placeholder="0-100" class="score-input w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500">
+          </div>
+          <div>
+           <label class="flex items-center justify-between text-xs font-medium mb-1.5" style="color:#9ca3af"><span>Semester 4</span><span class="pill text-[10px] px-1.5 py-0.5 rounded">18%</span></label><input data-key="sem4" type="number" min="0" max="100" step="0.01" placeholder="0-100" class="score-input w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500">
+          </div>
+          <div>
+           <label class="flex items-center justify-between text-xs font-medium mb-1.5" style="color:#9ca3af"><span>Semester 5</span><span class="pill text-[10px] px-1.5 py-0.5 rounded">18%</span></label><input data-key="sem5" type="number" min="0" max="100" step="0.01" placeholder="0-100" class="score-input w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500">
+          </div>
+          <div>
+           <label class="flex items-center justify-between text-xs font-medium mb-1.5" style="color:#9ca3af"><span>Nilai UM</span><span class="pill text-[10px] px-1.5 py-0.5 rounded">10%</span></label><input data-key="um" type="number" min="0" max="100" step="0.01" placeholder="0-100" class="score-input w-full bg-transparent border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500">
+          </div>
+         </div>
+         <div id="validation-msg" class="hidden text-xs px-3 py-2 rounded-lg" style="background:rgba(220,80,80,0.1);color:#f28585;border:1px solid rgba(220,80,80,0.3)"></div>
+         <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button type="submit" id="btn-save-score" class="btn-primary px-6 py-3 rounded-lg flex items-center justify-center gap-2"><i data-lucide="save" style="width:18px;height:18px;"></i><span>Simpan Nilai</span></button><button type="button" id="btn-reset-score" class="btn-ghost px-6 py-3 rounded-lg flex items-center justify-center gap-2"><i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i><span>Reset</span></button>
+         </div>
+        </form>
+       </div>
+       <div class="card-elevated rounded-xl p-5 sm:p-6" style="background:linear-gradient(160deg, #1e252f 0%, #181e26 50%, rgba(212,175,55,0.04) 100%);">
+        <div class="flex items-center gap-2 mb-1">
+         <i data-lucide="sparkles" style="width:16px;height:16px;color:#d4af37"></i><span class="text-xs tracking-wider uppercase font-medium" style="color:#d4af37">Preview Nilai Ijazah</span>
+        </div>
+        <p class="text-xs mb-5" style="color:#9ca3af">Dihitung langsung saat Anda mengetik</p>
+        <div class="text-center py-4 mb-4 rounded-lg" style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.15)">
+         <div id="preview-grade-letter" class="grade-badge text-5xl sm:text-6xl font-bold" style="color:#d4af37">
+          —
+         </div>
+         <div id="preview-grade-number" class="font-display text-3xl font-semibold text-white mt-2">
+          0.00
+         </div>
+         <div id="preview-grade-desc" class="text-xs mt-1" style="color:#9ca3af">
+          Belum ada nilai
+         </div>
+        </div>
+        <div class="space-y-2 text-xs">
+         <div class="flex justify-between items-center py-1.5">
+          <span style="color:#9ca3af">Sem 1 × 18%</span><span id="pv-s1" class="text-white font-mono">0.00</span>
+         </div>
+         <div class="flex justify-between items-center py-1.5">
+          <span style="color:#9ca3af">Sem 2 × 18%</span><span id="pv-s2" class="text-white font-mono">0.00</span>
+         </div>
+         <div class="flex justify-between items-center py-1.5">
+          <span style="color:#9ca3af">Sem 3 × 18%</span><span id="pv-s3" class="text-white font-mono">0.00</span>
+         </div>
+         <div class="flex justify-between items-center py-1.5">
+          <span style="color:#9ca3af">Sem 4 × 18%</span><span id="pv-s4" class="text-white font-mono">0.00</span>
+         </div>
+         <div class="flex justify-between items-center py-1.5">
+          <span style="color:#9ca3af">Sem 5 × 18%</span><span id="pv-s5" class="text-white font-mono">0.00</span>
+         </div>
+         <div class="flex justify-between items-center py-1.5">
+          <span style="color:#9ca3af">UM × 10%</span><span id="pv-um" class="text-white font-mono">0.00</span>
+         </div>
+         <div class="flex justify-between items-center pt-3 mt-2" style="border-top:1px solid rgba(212,175,55,0.2)">
+          <span class="font-medium text-white">Total</span><span id="pv-total" class="font-mono font-semibold" style="color:#d4af37">0.00</span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div id="input-empty" class="empty-state p-10 text-center">
+      <i data-lucide="clipboard-list" style="width:40px;height:40px;color:#6b7280" class="mx-auto mb-3"></i>
+      <p class="text-sm" style="color:#9ca3af">Pilih <span class="text-white font-medium">siswa</span> dan <span class="text-white font-medium">mata pelajaran</span> untuk mulai input nilai.</p>
+      <p id="input-empty-hint" class="text-xs mt-2" style="color:#6b7280"></p>
+     </div>
+    </section><!-- RECAP TAB -->
+    <section id="panel-recap" class="tab-panel hidden" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+       <div>
+        <h2 class="font-display text-xl font-semibold text-white">Rekap Nilai Ijazah</h2>
+        <p class="text-xs mt-1" style="color:#9ca3af">Tabel rekap nilai akhir ijazah per siswa dan mata pelajaran</p>
+       </div>
+       <div>
+        <select id="recap-filter" class="bg-transparent border border-gray-700 rounded-lg px-3 py-2 text-sm text-white"><option value="" style="background:#151b23">Semua Siswa</option></select>
+       </div>
+      </div>
+      <div id="recap-content" class="overflow-x-auto"></div>
+     </div>
+    </section><!-- TEACHER RECAP TAB -->
+    <section id="panel-teacher-recap" class="tab-panel hidden" role="tabpanel">
+     <div class="card-elevated rounded-xl p-5 sm:p-6">
+      <h2 class="font-display text-xl font-semibold text-white mb-5">Rekap Saya</h2>
+      <div id="teacher-recap-content" class="overflow-x-auto"></div>
+     </div>
+    </section>
+    <footer class="mt-10 text-center">
+     <p id="footer-note" class="text-xs" style="color:#6b7280">Nilai Ijazah = Σ(Sem 1–5 × 18%) + (UM × 10%)</p>
+    </footer>
+   </div>
+  </main><!-- Toast container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div><!-- Confirm dialog -->
+  <div id="confirm-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)">
+   <div class="card-elevated rounded-xl p-6 max-w-sm w-full">
+    <div class="flex items-start gap-3 mb-4">
+     <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(220,80,80,0.15)">
+      <i data-lucide="alert-triangle" style="width:20px;height:20px;color:#f28585"></i>
+     </div>
+     <div class="flex-1">
+      <h3 id="confirm-title" class="font-display text-lg font-semibold text-white">Konfirmasi</h3>
+      <p id="confirm-message" class="text-sm mt-1" style="color:#9ca3af"></p>
+     </div>
+    </div>
+    <div class="flex gap-3 justify-end">
+     <button id="confirm-cancel" class="btn-ghost px-4 py-2 rounded-lg text-sm">Batal</button><button id="confirm-ok" class="btn-danger px-4 py-2 rounded-lg text-sm font-medium">Hapus</button>
+    </div>
+   </div>
+  </div>
+  <script>
+(function(){
+  'use strict';
+
+  let allRecords = [];
+  let currentTab = 'subjects';
+  let selectedStudentId = '';
+  let selectedSubjectId = '';
+  let existingScoreRecord = null;
+  let initialized = false;
+  let currentUser = null;
+
+  const DATA_LIMIT = 999;
+  const ADMIN_PASSWORD = 'admin123';
+
+  const defaultConfig = {
+    app_title: 'Nilai Ijazah',
+    app_subtitle: 'Hitung nilai ijazah otomatis: Semester 1–5 (18% tiap semester) + UM (10%)',
+    footer_note: 'Nilai Ijazah = Σ(Sem 1–5 × 18%) + (UM × 10%)'
+  };
+
+  function genId(){ return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function showToast(msg, type){
+    type = type || 'success';
+    const el = document.createElement('div');
+    const colors = type === 'error' ? { bg:'rgba(220,80,80,0.15)', border:'rgba(220,80,80,0.4)', color:'#f28585', icon:'alert-circle' } : { bg:'rgba(212,175,55,0.15)', border:'rgba(212,175,55,0.4)', color:'#d4af37', icon:'check-circle' };
+    el.className = 'toast card rounded-lg px-4 py-3 flex items-center gap-2 text-sm shadow-lg';
+    el.style.background = colors.bg;
+    el.style.border = '1px solid ' + colors.border;
+    el.style.color = colors.color;
+    el.innerHTML = `<i data-lucide="${colors.icon}" style="width:16px;height:16px"></i><span>${esc(msg)}</span>`;
+    document.getElementById('toast-container').appendChild(el);
+    lucide.createIcons();
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  function confirmDialog(title, message){
+    return new Promise(resolve => {
+      const overlay = document.getElementById('confirm-overlay');
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+      overlay.classList.remove('hidden');
+      const okBtn = document.getElementById('confirm-ok');
+      const cancelBtn = document.getElementById('confirm-cancel');
+      function cleanup(result){
+        overlay.classList.add('hidden');
+        okBtn.removeEventListener('click', onOk);
+        cancelBtn.removeEventListener('click', onCancel);
+        resolve(result);
+      }
+      function onOk(){ cleanup(true); }
+      function onCancel(){ cleanup(false); }
+      okBtn.addEventListener('click', onOk);
+      cancelBtn.addEventListener('click', onCancel);
+    });
+  }
+
+  function getSubjects(){ return allRecords.filter(r => r.type === 'subject').sort((a,b) => (a.createdAt||'').localeCompare(b.createdAt||'')); }
+  function getStudents(){ return allRecords.filter(r => r.type === 'student').sort((a,b) => (a.createdAt||'').localeCompare(b.createdAt||'')); }
+  function getTeachers(){ return allRecords.filter(r => r.type === 'teacher').sort((a,b) => (a.createdAt||'').localeCompare(b.createdAt||'')); }
+  function getScores(){ return allRecords.filter(r => r.type === 'score'); }
+  function findScore(studentId, subjectId){ return getScores().find(s => s.studentId === studentId && s.subjectId === subjectId) || null; }
+  function getTeacherSubjects(teacherId){ return allRecords.filter(r => r.type === 'teacher_subject' && r.teacherId === teacherId); }
+
+  function showLoginScreen(){
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('main-screen').classList.add('hidden');
+  }
+
+  function showMainScreen(){
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-screen').classList.remove('hidden');
+  }
+
+  function updateUserInfo(){
+    const info = document.getElementById('current-user-info');
+    const subjInfo = document.getElementById('teacher-subjects-info');
+    if (currentUser){
+      const roleLabel = currentUser.role === 'admin' ? 'Admin' : 'Guru';
+      info.textContent = `${roleLabel} · ${currentUser.name}`;
+      
+      if (currentUser.role === 'teacher'){
+        const teacherSubs = getTeacherSubjects(currentUser.id);
+        if (teacherSubs.length > 0){
+          const subjectNames = teacherSubs
+            .map(ts => {
+              const sub = getSubjects().find(s => s.__backendId === ts.subjectId);
+              return sub ? sub.name : '';
+            })
+            .filter(Boolean)
+            .join(', ');
+          subjInfo.textContent = subjectNames;
+          subjInfo.style.display = '';
+        } else {
+          subjInfo.style.display = 'none';
+        }
+      } else {
+        subjInfo.style.display = 'none';
+      }
+    }
+  }
+
+  function updateTabsVisibility(){
+    const tabs = document.getElementById('nav-tabs').querySelectorAll('.tab-btn');
+    tabs.forEach(tab => {
+      const tabName = tab.dataset.tab;
+      if (currentUser.role === 'teacher'){
+        tab.style.display = (tabName === 'input' || tabName === 'teacher-recap') ? '' : 'none';
+      } else {
+        tab.style.display = (tabName === 'input' || tabName === 'teacher-recap') ? 'none' : '';
+      }
+    });
+  }
+
+  async function handleLogin(e){
+    e.preventDefault();
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    const errorEl = document.getElementById('login-error');
+
+    if (!username || !password){
+      errorEl.textContent = 'Username dan password harus diisi.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    if (username === 'admin'){
+      if (password === ADMIN_PASSWORD){
+        currentUser = { role: 'admin', id: 'admin', name: 'Administrator', username: 'admin' };
+        showMainScreen();
+        updateUserInfo();
+        updateTabsVisibility();
+        switchTab('subjects');
+        errorEl.classList.add('hidden');
+        document.getElementById('form-login').reset();
+        return;
+      } else {
+        errorEl.textContent = 'Password admin salah.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+    }
+
+    const teacher = getTeachers().find(t => t.username === username);
+    if (teacher){
+      if (teacher.password === password){
+        currentUser = { role: 'teacher', id: teacher.__backendId, name: teacher.teacherName, username: teacher.username };
+        showMainScreen();
+        updateUserInfo();
+        updateTabsVisibility();
+        switchTab('input');
+        errorEl.classList.add('hidden');
+        document.getElementById('form-login').reset();
+        return;
+      } else {
+        errorEl.textContent = 'Password guru salah.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+    }
+
+    errorEl.textContent = 'Username tidak ditemukan.';
+    errorEl.classList.remove('hidden');
+  }
+
+  function handleLogout(){
+    currentUser = null;
+    selectedStudentId = '';
+    selectedSubjectId = '';
+    showLoginScreen();
+    document.getElementById('form-login').reset();
+    document.getElementById('login-error').classList.add('hidden');
+  }
+
+  function calcTotal(s){
+    const vals = [s.sem1, s.sem2, s.sem3, s.sem4, s.sem5, s.um].map(v => Number(v) || 0);
+    return vals[0]*0.18 + vals[1]*0.18 + vals[2]*0.18 + vals[3]*0.18 + vals[4]*0.18 + vals[5]*0.10;
+  }
+
+  function gradeLetter(t){
+    if (t >= 90) return { letter:'A', desc:'Sangat Baik' };
+    if (t >= 80) return { letter:'B', desc:'Baik' };
+    if (t >= 70) return { letter:'C', desc:'Cukup' };
+    if (t >= 60) return { letter:'D', desc:'Kurang' };
+    if (t > 0) return { letter:'E', desc:'Sangat Kurang' };
+    return { letter:'—', desc:'Belum ada nilai' };
+  }
+
+  function switchTab(tab){
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      const active = b.dataset.tab === tab;
+      b.classList.toggle('active', active);
+      b.style.color = active ? '' : '#9ca3af';
+    });
+    ['subjects','students','teachers','assign','input','recap','teacher-recap'].forEach(t => {
+      document.getElementById('panel-'+t).classList.toggle('hidden', t !== tab);
+    });
+    if (tab === 'assign') renderAssignTab();
+    if (tab === 'input') renderInputTab();
+    if (tab === 'recap') renderRecap();
+    if (tab === 'teacher-recap') renderTeacherRecap();
+  }
+
+  function renderSubjects(){
+    const list = document.getElementById('list-subjects');
+    const subs = getSubjects();
+    document.getElementById('count-subjects').textContent = subs.length;
+    if (subs.length === 0){
+      list.innerHTML = `<div class="empty-state p-8 text-center"><i data-lucide="book-open" style="width:32px;height:32px;color:#6b7280" class="mx-auto mb-2"></i><p class="text-sm" style="color:#9ca3af">Belum ada mata pelajaran.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+    list.innerHTML = subs.map(s => `<div class="card flex items-center justify-between px-4 py-3"><div class="flex items-center gap-3 min-w-0"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(212,175,55,0.1)"><i data-lucide="book-marked" style="width:16px;height:16px;color:#d4af37"></i></div><span class="text-white text-sm font-medium truncate">${esc(s.name)}</span></div><button class="btn-danger px-3 py-1.5 rounded-md text-xs flex items-center gap-1.5 flex-shrink-0" data-del-subject="${esc(s.__backendId)}"><i data-lucide="trash-2" style="width:14px;height:14px"></i><span class="hidden sm:inline">Hapus</span></button></div>`).join('');
+    lucide.createIcons();
+    list.querySelectorAll('[data-del-subject]').forEach(btn => {
+      btn.addEventListener('click', () => handleDeleteSubject(btn.dataset.delSubject));
+    });
+  }
+
+  function renderStudents(){
+    const list = document.getElementById('list-students');
+    const studs = getStudents();
+    document.getElementById('count-students').textContent = studs.length;
+    if (studs.length === 0){
+      list.innerHTML = `<div class="empty-state p-8 text-center"><i data-lucide="users" style="width:32px;height:32px;color:#6b7280" class="mx-auto mb-2"></i><p class="text-sm" style="color:#9ca3af">Belum ada siswa.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+    list.innerHTML = studs.map(s => `<div class="card flex items-center justify-between px-4 py-3 gap-3"><div class="flex items-center gap-3 min-w-0 flex-1"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(100,150,220,0.1)"><i data-lucide="user" style="width:16px;height:16px;color:#6496dc"></i></div><div class="min-w-0"><div class="text-white text-sm font-medium truncate">${esc(s.name)}</div><div class="text-xs mt-0.5 flex gap-3" style="color:#9ca3af">${s.nisn ? `<span>NISN: ${esc(s.nisn)}</span>` : ''}${s.nisn && s.kelas ? ' · ' : ''}${s.kelas ? `<span>Kelas: ${esc(s.kelas)}</span>` : ''}</div></div></div><button class="btn-danger px-3 py-1.5 rounded-md text-xs flex items-center gap-1.5 flex-shrink-0" data-del-student="${esc(s.__backendId)}"><i data-lucide="trash-2" style="width:14px;height:14px"></i><span class="hidden sm:inline">Hapus</span></button></div>`).join('');
+    lucide.createIcons();
+    list.querySelectorAll('[data-del-student]').forEach(btn => {
+      btn.addEventListener('click', () => handleDeleteStudent(btn.dataset.delStudent));
+    });
+  }
+
+  function renderTeachers(){
+    const list = document.getElementById('list-teachers');
+    const teachers = getTeachers();
+    document.getElementById('count-teachers').textContent = teachers.length;
+    if (teachers.length === 0){
+      list.innerHTML = `<div class="empty-state p-8 text-center"><i data-lucide="user-check" style="width:32px;height:32px;color:#6b7280" class="mx-auto mb-2"></i><p class="text-sm" style="color:#9ca3af">Belum ada akun guru.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+    list.innerHTML = teachers.map(t => {
+      const teacherSubs = getTeacherSubjects(t.__backendId);
+      const subjectNames = teacherSubs.map(ts => {
+        const sub = getSubjects().find(s => s.__backendId === ts.subjectId);
+        return sub ? sub.name : '';
+      }).filter(Boolean).join(', ');
+      return `<div class="card flex items-center justify-between px-4 py-3 gap-3"><div class="flex items-center gap-3 min-w-0 flex-1"><div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(100,200,150,0.1)"><i data-lucide="user-check" style="width:16px;height:16px;color:#64c896"></i></div><div class="min-w-0"><div class="text-white text-sm font-medium truncate">${esc(t.teacherName)}</div><div class="text-xs mt-0.5" style="color:#9ca3af">Username: <span class="font-mono">${esc(t.username)}</span></div>${subjectNames ? `<div class="text-xs mt-1.5" style="color:#d4af37">${esc(subjectNames)}</div>` : ''}</div></div><button class="btn-danger px-3 py-1.5 rounded-md text-xs flex items-center gap-1.5 flex-shrink-0" data-del-teacher="${esc(t.__backendId)}"><i data-lucide="trash-2" style="width:14px;height:14px"></i><span class="hidden sm:inline">Hapus</span></button></div>`;
+    }).join('');
+    lucide.createIcons();
+    list.querySelectorAll('[data-del-teacher]').forEach(btn => {
+      btn.addEventListener('click', () => handleDeleteTeacher(btn.dataset.delTeacher));
+    });
+  }
+
+  function renderAssignTab(){
+    const subs = getSubjects();
+    const teachers = getTeachers();
+    const select = document.getElementById('select-teacher-assign');
+    const prev = select.value;
+    select.innerHTML = '<option value="" style="background:#151b23">— Pilih guru —</option>' + teachers.map(t => `<option value="${esc(t.__backendId)}" style="background:#151b23">${esc(t.teacherName)}</option>`).join('');
+    if (teachers.find(t => t.__backendId === prev)) select.value = prev;
+    
+    const content = document.getElementById('assign-content');
+    if (!select.value){
+      content.innerHTML = `<div class="empty-state p-8 text-center"><i data-lucide="info" style="width:32px;height:32px;color:#6b7280" class="mx-auto mb-2"></i><p class="text-sm" style="color:#9ca3af">Pilih guru untuk mengatur mata pelajaran mereka.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+
+    if (subs.length === 0){
+      content.innerHTML = `<div class="empty-state p-8 text-center"><i data-lucide="book-open" style="width:32px;height:32px;color:#6b7280" class="mx-auto mb-2"></i><p class="text-sm" style="color:#9ca3af">Belum ada mata pelajaran untuk di-assign.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+
+    const teacherId = select.value;
+    const assignedSubs = getTeacherSubjects(teacherId);
+    const assignedIds = new Set(assignedSubs.map(s => s.subjectId));
+
+    let html = '<div class="space-y-2">';
+    subs.forEach(sub => {
+      const isChecked = assignedIds.has(sub.__backendId);
+      html += `<label class="flex items-center gap-3 p-3 card cursor-pointer transition hover:bg-opacity-80">
+        <input type="checkbox" class="assign-checkbox" data-teacher="${esc(teacherId)}" data-subject="${esc(sub.__backendId)}" ${isChecked ? 'checked' : ''} style="width:18px;height:18px;cursor:pointer">
+        <span class="text-white font-medium">${esc(sub.name)}</span>
+      </label>`;
+    });
+    html += '</div>';
+    content.innerHTML = html;
+    lucide.createIcons();
+
+    content.querySelectorAll('.assign-checkbox').forEach(cb => {
+      cb.addEventListener('change', handleAssignSubject);
+    });
+  }
+
+  async function handleAssignSubject(e){
+    const cb = e.target;
+    const teacherId = cb.dataset.teacher;
+    const subjectId = cb.dataset.subject;
+    const isChecked = cb.checked;
+
+    if (isChecked){
+      if (allRecords.length >= DATA_LIMIT){
+        cb.checked = false;
+        showToast('Batas data 999 tercapai.', 'error');
+        return;
+      }
+      const res = await window.dataSdk.create({
+        type: 'teacher_subject',
+        id: genId(),
+        teacherId,
+        subjectId,
+        createdAt: new Date().toISOString()
+      });
+      if (!res.isOk){
+        cb.checked = false;
+        showToast('Gagal menambahkan mata pelajaran.', 'error');
+      }
+    } else {
+      const existing = allRecords.find(r => r.type === 'teacher_subject' && r.teacherId === teacherId && r.subjectId === subjectId);
+      if (existing){
+        const res = await window.dataSdk.delete(existing);
+        if (!res.isOk){
+          cb.checked = true;
+          showToast('Gagal menghapus mata pelajaran.', 'error');
+        }
+      }
+    }
+  }
+
+  function renderInputTab(){
+    const studs = getStudents();
+    const subs = currentUser.role === 'teacher' ? 
+      getTeacherSubjects(currentUser.id).map(ts => getSubjects().find(s => s.__backendId === ts.subjectId)).filter(Boolean) :
+      getSubjects();
+    const studSel = document.getElementById('select-student');
+    const searchInput = document.getElementById('search-student');
+    const subSel = document.getElementById('select-subject');
+    const prevStud = selectedStudentId;
+    const prevSub = selectedSubjectId;
+
+    studSel.innerHTML = '<option value="" style="background:#151b23">— Pilih siswa —</option>' + studs.map(s => `<option value="${esc(s.__backendId)}" style="background:#151b23">${esc(s.name)}${s.kelas ? ' ('+esc(s.kelas)+')' : ''}</option>`).join('');
+    subSel.innerHTML = '<option value="" style="background:#151b23">— Pilih mapel —</option>' + subs.map(s => `<option value="${esc(s.__backendId)}" style="background:#151b23">${esc(s.name)}</option>`).join('');
+
+    if (studs.find(s => s.__backendId === prevStud)) studSel.value = prevStud;
+    else selectedStudentId = '';
+    if (subs.find(s => s.__backendId === prevSub)) subSel.value = prevSub;
+    else selectedSubjectId = '';
+
+    const hint = document.getElementById('input-empty-hint');
+    const missing = [];
+    if (studs.length === 0) missing.push('siswa');
+    if (subs.length === 0) missing.push(currentUser.role === 'teacher' ? 'mata pelajaran yang di-assign' : 'mata pelajaran');
+    hint.textContent = missing.length > 0 ? `Belum ada ${missing.join(' dan ')}. ${currentUser.role === 'teacher' ? 'Minta admin untuk assign mata pelajaran Anda.' : 'Tambahkan terlebih dahulu.'}` : '';
+
+    updateScoreForm();
+  }
+
+  function updateScoreForm(){
+    const wrap = document.getElementById('score-form-wrap');
+    const empty = document.getElementById('input-empty');
+    if (selectedStudentId && selectedSubjectId){
+      wrap.classList.remove('hidden');
+      empty.classList.add('hidden');
+      existingScoreRecord = findScore(selectedStudentId, selectedSubjectId);
+      const fields = ['sem1','sem2','sem3','sem4','sem5','um'];
+      fields.forEach(k => {
+        const inp = document.querySelector(`.score-input[data-key="${k}"]`);
+        inp.value = existingScoreRecord ? (existingScoreRecord[k] ?? '') : '';
+      });
+      updatePreview();
+    } else {
+      wrap.classList.add('hidden');
+      empty.classList.remove('hidden');
+    }
+  }
+
+  function getFormScores(){
+    const out = {};
+    ['sem1','sem2','sem3','sem4','sem5','um'].forEach(k => {
+      const v = document.querySelector(`.score-input[data-key="${k}"]`).value;
+      out[k] = v === '' ? 0 : Number(v);
+    });
+    return out;
+  }
+
+  function updatePreview(){
+    const s = getFormScores();
+    const total = calcTotal(s);
+    document.getElementById('pv-s1').textContent = (s.sem1*0.18).toFixed(2);
+    document.getElementById('pv-s2').textContent = (s.sem2*0.18).toFixed(2);
+    document.getElementById('pv-s3').textContent = (s.sem3*0.18).toFixed(2);
+    document.getElementById('pv-s4').textContent = (s.sem4*0.18).toFixed(2);
+    document.getElementById('pv-s5').textContent = (s.sem5*0.18).toFixed(2);
+    document.getElementById('pv-um').textContent = (s.um*0.10).toFixed(2);
+    document.getElementById('pv-total').textContent = total.toFixed(2);
+    const g = gradeLetter(total);
+    document.getElementById('preview-grade-letter').textContent = g.letter;
+    document.getElementById('preview-grade-number').textContent = total.toFixed(2);
+    document.getElementById('preview-grade-desc').textContent = g.desc;
+  }
+
+  function validateScores(s){
+    for (const k of ['sem1','sem2','sem3','sem4','sem5','um']){
+      const v = s[k];
+      if (isNaN(v) || v < 0 || v > 100) return 'Semua nilai harus di antara 0 sampai 100.';
+    }
+    return null;
+  }
+
+  function renderRecap(){
+    const studs = getStudents();
+    const subs = getSubjects();
+    const scores = getScores();
+    const filter = document.getElementById('recap-filter');
+    const prev = filter.value;
+    filter.innerHTML = '<option value="" style="background:#151b23">Semua Siswa</option>' + studs.map(s => `<option value="${esc(s.__backendId)}" style="background:#151b23">${esc(s.name)}</option>`).join('');
+    if (studs.find(s => s.__backendId === prev)) filter.value = prev;
+
+    const content = document.getElementById('recap-content');
+    if (studs.length === 0 || subs.length === 0){
+      content.innerHTML = `<div class="empty-state p-10 text-center"><i data-lucide="inbox" style="width:40px;height:40px;color:#6b7280" class="mx-auto mb-3"></i><p class="text-sm" style="color:#9ca3af">Tambahkan minimal satu siswa dan satu mata pelajaran untuk melihat rekap.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+
+    const displayStudents = filter.value ? studs.filter(s => s.__backendId === filter.value) : studs;
+
+    let html = '';
+    displayStudents.forEach(stud => {
+      const rows = subs.map(sub => {
+        const sc = scores.find(s => s.studentId === stud.__backendId && s.subjectId === sub.__backendId);
+        if (!sc){
+          return `<tr><td class="py-2.5 px-3 text-sm text-white">${esc(sub.name)}</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td><td class="py-2.5 px-3 text-sm text-center" style="color:#6b7280">—</td></tr>`;
+        }
+        const total = calcTotal(sc);
+        const g = gradeLetter(total);
+        return `<tr><td class="py-2.5 px-3 text-sm text-white font-medium">${esc(sub.name)}</td><td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${Number(sc.sem1).toFixed(2)}</td><td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${Number(sc.sem2).toFixed(2)}</td><td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${Number(sc.sem3).toFixed(2)}</td><td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${Number(sc.sem4).toFixed(2)}</td><td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${Number(sc.sem5).toFixed(2)}</td><td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${Number(sc.um).toFixed(2)}</td><td class="py-2.5 px-3 text-sm text-center font-mono font-semibold" style="color:#d4af37">${total.toFixed(2)}</td><td class="py-2.5 px-3 text-center"><span class="grade-badge inline-block px-2 py-0.5 rounded text-sm" style="background:rgba(212,175,55,0.12);color:#d4af37">${g.letter}</span></td></tr>`;
+      }).join('');
+
+      const studScores = scores.filter(s => s.studentId === stud.__backendId);
+      const avg = studScores.length > 0 ? (studScores.reduce((acc, s) => acc + calcTotal(s), 0) / studScores.length) : 0;
+      const avgG = gradeLetter(avg);
+
+      html += `<div class="mb-6"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3 px-1"><div><h3 class="font-display text-lg font-semibold text-white">${esc(stud.name)}</h3><div class="text-xs" style="color:#9ca3af">${stud.nisn ? 'NISN: '+esc(stud.nisn) : ''}${stud.nisn && stud.kelas ? ' · ' : ''}${stud.kelas ? 'Kelas: '+esc(stud.kelas) : ''}</div></div><div class="flex items-center gap-3 text-sm"><div class="text-right"><div class="text-xs" style="color:#9ca3af">Rata-rata Ijazah</div><div class="font-mono font-semibold" style="color:#d4af37">${studScores.length > 0 ? avg.toFixed(2) : '—'} ${studScores.length > 0 ? '· '+avgG.letter : ''}</div></div></div></div><div class="card rounded-lg overflow-x-auto"><table class="w-full min-w-[720px]"><thead><tr style="background:rgba(212,175,55,0.05)"><th class="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#d4af37">Mata Pelajaran</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S1</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S2</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S3</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S4</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S5</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">UM</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#d4af37">Ijazah</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#d4af37">Grade</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    });
+
+    content.innerHTML = html;
+    lucide.createIcons();
+  }
+
+  function renderTeacherRecap(){
+    const subs = currentUser.role === 'teacher' ? 
+      getTeacherSubjects(currentUser.id).map(ts => getSubjects().find(s => s.__backendId === ts.subjectId)).filter(Boolean) :
+      getSubjects();
+    const scores = getScores();
+    const content = document.getElementById('teacher-recap-content');
+
+    if (subs.length === 0){
+      content.innerHTML = `<div class="empty-state p-10 text-center"><i data-lucide="book-open" style="width:40px;height:40px;color:#6b7280" class="mx-auto mb-3"></i><p class="text-sm" style="color:#9ca3af">Belum ada mata pelajaran yang di-assign untuk Anda.</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+
+    const teacherScores = scores.filter(s => subs.some(sub => sub.__backendId === s.subjectId));
+    const allStudents = getStudents();
+
+    const completeStudents = allStudents.filter(stud => {
+      return subs.every(sub => {
+        const hasScore = teacherScores.some(s => s.studentId === stud.__backendId && s.subjectId === sub.__backendId);
+        return hasScore;
+      });
+    });
+
+    if (completeStudents.length === 0){
+      content.innerHTML = `<div class="empty-state p-10 text-center"><i data-lucide="clipboard-list" style="width:40px;height:40px;color:#6b7280" class="mx-auto mb-3"></i><p class="text-sm" style="color:#9ca3af">Belum ada siswa yang sudah lengkap nilainya. Mulai input nilai di tab "Input Nilai".</p></div>`;
+      lucide.createIcons();
+      return;
+    }
+
+    let html = '<div class="card rounded-lg overflow-x-auto"><table class="w-full min-w-[800px]"><thead><tr style="background:rgba(212,175,55,0.05)"><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">No</th><th class="text-left py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#d4af37">Nama Siswa</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S1</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S2</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S3</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S4</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">S5</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#9ca3af">UM</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#d4af37">Ijazah</th><th class="text-center py-2.5 px-3 text-xs font-medium uppercase tracking-wider" style="color:#d4af37">Grade</th></tr></thead><tbody>';
+
+    completeStudents.forEach((stud, index) => {
+      const studScores = scores.filter(s => s.studentId === stud.__backendId && subs.some(sub => sub.__backendId === s.subjectId));
+      const avgTotal = studScores.length > 0 ? (studScores.reduce((acc, s) => acc + calcTotal(s), 0) / studScores.length) : 0;
+      const avgG = gradeLetter(avgTotal);
+
+      html += `<tr><td class="py-2.5 px-3 text-sm text-center font-medium" style="color:#9ca3af">${index + 1}</td><td class="py-2.5 px-3 text-sm text-white font-medium">${esc(stud.name)}</td>`;
+      
+      let sem1Total = 0, sem2Total = 0, sem3Total = 0, sem4Total = 0, sem5Total = 0, umTotal = 0;
+      let count = 0;
+      
+      studScores.forEach(s => {
+        sem1Total += Number(s.sem1) || 0;
+        sem2Total += Number(s.sem2) || 0;
+        sem3Total += Number(s.sem3) || 0;
+        sem4Total += Number(s.sem4) || 0;
+        sem5Total += Number(s.sem5) || 0;
+        umTotal += Number(s.um) || 0;
+        count++;
+      });
+
+      const avgSem1 = count > 0 ? (sem1Total / count) : 0;
+      const avgSem2 = count > 0 ? (sem2Total / count) : 0;
+      const avgSem3 = count > 0 ? (sem3Total / count) : 0;
+      const avgSem4 = count > 0 ? (sem4Total / count) : 0;
+      const avgSem5 = count > 0 ? (sem5Total / count) : 0;
+      const avgUM = count > 0 ? (umTotal / count) : 0;
+
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${avgSem1.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${avgSem2.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${avgSem3.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${avgSem4.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${avgSem5.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono" style="color:#cbd5e1">${avgUM.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-sm text-center font-mono font-semibold" style="color:#d4af37">${avgTotal.toFixed(2)}</td>`;
+      html += `<td class="py-2.5 px-3 text-center"><span class="grade-badge inline-block px-2 py-0.5 rounded text-sm" style="background:rgba(212,175,55,0.12);color:#d4af37">${avgG.letter}</span></td></tr>`;
+    });
+
+    html += '</tbody></table></div>';
+    content.innerHTML = html;
+    lucide.createIcons();
+  }
+
+  async function handleAddSubject(e){
+    e.preventDefault();
+    const input = document.getElementById('input-subject-name');
+    const btn = document.getElementById('btn-add-subject');
+    const name = input.value.trim();
+    if (!name) return;
+    if (allRecords.length >= DATA_LIMIT){
+      showToast('Batas data 999 tercapai.', 'error');
+      return;
+    }
+    if (getSubjects().some(s => s.name.toLowerCase() === name.toLowerCase())){
+      showToast('Mata pelajaran sudah ada.', 'error');
+      return;
+    }
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<div class="spinner" style="width:16px;height:16px"></div><span>Menyimpan...</span>`;
+    const res = await window.dataSdk.create({
+      type: 'subject',
+      id: genId(),
+      name,
+      createdAt: new Date().toISOString()
+    });
+    btn.disabled = false;
+    btn.innerHTML = orig;
+    lucide.createIcons();
+    if (res.isOk){
+      input.value = '';
+      showToast('Mata pelajaran ditambahkan');
+    } else showToast('Gagal menyimpan.', 'error');
+  }
+
+  async function handleDeleteSubject(backendId){
+    const sub = allRecords.find(r => r.__backendId === backendId);
+    if (!sub) return;
+    const relatedScores = getScores().filter(s => s.subjectId === backendId);
+    const msg = relatedScores.length > 0 ? `Hapus "${sub.name}"? ${relatedScores.length} data nilai terkait juga akan dihapus.` : `Hapus mata pelajaran "${sub.name}"?`;
+    const ok = await confirmDialog('Hapus Mata Pelajaran', msg);
+    if (!ok) return;
+    for (const sc of relatedScores){
+      const r = await window.dataSdk.delete(sc);
+      if (!r.isOk){ showToast('Gagal menghapus nilai terkait.', 'error'); return; }
+    }
+    const res = await window.dataSdk.delete(sub);
+    if (res.isOk) showToast('Mata pelajaran dihapus');
+    else showToast('Gagal menghapus.', 'error');
+  }
+
+  async function handleAddStudent(e){
+    e.preventDefault();
+    const btn = document.getElementById('btn-add-student');
+    const name = document.getElementById('input-student-name').value.trim();
+    const nisn = document.getElementById('input-student-nisn').value.trim();
+    const kelas = document.getElementById('input-student-kelas').value.trim();
+    if (!name) return;
+    if (allRecords.length >= DATA_LIMIT){
+      showToast('Batas data 999 tercapai.', 'error');
+      return;
+    }
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<div class="spinner" style="width:16px;height:16px"></div><span>Menyimpan...</span>`;
+    const res = await window.dataSdk.create({
+      type: 'student',
+      id: genId(),
+      name, nisn, kelas,
+      createdAt: new Date().toISOString()
+    });
+    btn.disabled = false;
+    btn.innerHTML = orig;
+    lucide.createIcons();
+    if (res.isOk){
+      document.getElementById('form-student').reset();
+      showToast('Siswa ditambahkan');
+    } else showToast('Gagal menyimpan.', 'error');
+  }
+
+  async function handleDeleteStudent(backendId){
+    const stud = allRecords.find(r => r.__backendId === backendId);
+    if (!stud) return;
+    const relatedScores = getScores().filter(s => s.studentId === backendId);
+    const msg = relatedScores.length > 0 ? `Hapus "${stud.name}"? ${relatedScores.length} data nilai terkait juga akan dihapus.` : `Hapus siswa "${stud.name}"?`;
+    const ok = await confirmDialog('Hapus Siswa', msg);
+    if (!ok) return;
+    for (const sc of relatedScores){
+      const r = await window.dataSdk.delete(sc);
+      if (!r.isOk){ showToast('Gagal menghapus nilai terkait.', 'error'); return; }
+    }
+    const res = await window.dataSdk.delete(stud);
+    if (res.isOk) showToast('Siswa dihapus');
+    else showToast('Gagal menghapus.', 'error');
+  }
+
+  async function handleAddTeacher(e){
+    e.preventDefault();
+    const btn = document.getElementById('btn-add-teacher');
+    const name = document.getElementById('input-teacher-name').value.trim();
+    const username = document.getElementById('input-teacher-username').value.trim();
+    const password = document.getElementById('input-teacher-password').value.trim();
+    if (!name || !username || !password) return;
+    if (getTeachers().some(t => t.username === username)){
+      showToast('Username sudah digunakan.', 'error');
+      return;
+    }
+    if (allRecords.length >= DATA_LIMIT){
+      showToast('Batas data 999 tercapai.', 'error');
+      return;
+    }
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<div class="spinner" style="width:16px;height:16px"></div><span>Menyimpan...</span>`;
+    const res = await window.dataSdk.create({
+      type: 'teacher',
+      id: genId(),
+      teacherName: name,
+      username,
+      password,
+      createdAt: new Date().toISOString()
+    });
+    btn.disabled = false;
+    btn.innerHTML = orig;
+    lucide.createIcons();
+    if (res.isOk){
+      document.getElementById('form-teacher').reset();
+      showToast('Akun guru ditambahkan');
+    } else showToast('Gagal menyimpan.', 'error');
+  }
+
+  async function handleDeleteTeacher(backendId){
+    const teacher = allRecords.find(r => r.__backendId === backendId);
+    if (!teacher) return;
+    const ok = await confirmDialog('Hapus Akun Guru', `Hapus akun guru "${teacher.teacherName}" (${teacher.username})?`);
+    if (!ok) return;
+    const res = await window.dataSdk.delete(teacher);
+    if (res.isOk) showToast('Akun guru dihapus');
+    else showToast('Gagal menghapus.', 'error');
+  }
+
+  async function handleSaveScore(e){
+    e.preventDefault();
+    const msgEl = document.getElementById('validation-msg');
+    const btn = document.getElementById('btn-save-score');
+    const s = getFormScores();
+    const err = validateScores(s);
+    if (err){
+      msgEl.textContent = err;
+      msgEl.classList.remove('hidden');
+      return;
+    }
+    msgEl.classList.add('hidden');
+
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<div class="spinner" style="width:16px;height:16px"></div><span>Menyimpan...</span>`;
+
+    let res;
+    if (existingScoreRecord){
+      const updated = { ...existingScoreRecord, sem1:s.sem1, sem2:s.sem2, sem3:s.sem3, sem4:s.sem4, sem5:s.sem5, um:s.um };
+      res = await window.dataSdk.update(updated);
+    } else {
+      if (allRecords.length >= DATA_LIMIT){
+        btn.disabled = false;
+        btn.innerHTML = orig;
+        lucide.createIcons();
+        showToast('Batas data 999 tercapai.', 'error');
+        return;
+      }
+      res = await window.dataSdk.create({
+        type: 'score',
+        id: genId(),
+        studentId: selectedStudentId,
+        subjectId: selectedSubjectId,
+        sem1:s.sem1, sem2:s.sem2, sem3:s.sem3, sem4:s.sem4, sem5:s.sem5, um:s.um,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = orig;
+    lucide.createIcons();
+
+    if (res.isOk) showToast(existingScoreRecord ? 'Nilai diperbarui' : 'Nilai disimpan');
+    else showToast('Gagal menyimpan nilai.', 'error');
+  }
+
+  function handleResetScore(){
+    document.querySelectorAll('.score-input').forEach(i => i.value = '');
+    updatePreview();
+    document.getElementById('validation-msg').classList.add('hidden');
+  }
+
+  function bindEvents(){
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.addEventListener('click', () => switchTab(b.dataset.tab));
+    });
+    document.getElementById('form-login').addEventListener('submit', handleLogin);
+    document.getElementById('btn-logout').addEventListener('click', handleLogout);
+    document.getElementById('form-subject').addEventListener('submit', handleAddSubject);
+    document.getElementById('form-student').addEventListener('submit', handleAddStudent);
+    document.getElementById('form-teacher').addEventListener('submit', handleAddTeacher);
+    document.getElementById('form-scores').addEventListener('submit', handleSaveScore);
+    document.getElementById('btn-reset-score').addEventListener('click', handleResetScore);
+
+    document.getElementById('select-teacher-assign').addEventListener('change', renderAssignTab);
+
+    document.getElementById('select-student').addEventListener('change', (e) => {
+      selectedStudentId = e.target.value;
+      document.getElementById('search-student').value = '';
+      document.getElementById('student-search-results').style.display = 'none';
+      updateScoreForm();
+    });
+    document.getElementById('select-subject').addEventListener('change', (e) => {
+      selectedSubjectId = e.target.value;
+      updateScoreForm();
+    });
+
+    document.getElementById('search-student').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const resultsDiv = document.getElementById('student-search-results');
+      
+      if (query.length === 0){
+        resultsDiv.style.display = 'none';
+        return;
+      }
+      
+      const studs = getStudents();
+      const filtered = studs.filter(s => s.name.toLowerCase().includes(query)).slice(0, 8);
+      
+      if (filtered.length === 0){
+        resultsDiv.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400">Siswa tidak ditemukan</div>';
+        resultsDiv.style.display = 'block';
+        return;
+      }
+      
+      resultsDiv.innerHTML = filtered.map(s => `
+        <button type="button" class="w-full text-left px-4 py-2.5 text-sm text-white hover:bg-gray-700 transition flex items-center justify-between" data-search-select="${esc(s.__backendId)}">
+          <span>${esc(s.name)}${s.kelas ? ' (' + esc(s.kelas) + ')' : ''}</span>
+          <i data-lucide="check" style="width:14px;height:14px;color:#d4af37"></i>
+        </button>
+      `).join('');
+      resultsDiv.style.display = 'block';
+      lucide.createIcons();
+      
+      resultsDiv.querySelectorAll('[data-search-select]').forEach(btn => {
+        btn.addEventListener('click', (evt) => {
+          evt.preventDefault();
+          const studId = btn.dataset.searchSelect;
+          selectedStudentId = studId;
+          document.getElementById('select-student').value = studId;
+          document.getElementById('search-student').value = '';
+          resultsDiv.style.display = 'none';
+          updateScoreForm();
+        });
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const searchInput = document.getElementById('search-student');
+      const resultsDiv = document.getElementById('student-search-results');
+      if (!e.target.closest('.relative')){
+        resultsDiv.style.display = 'none';
+      }
+    });
+
+    document.querySelectorAll('.score-input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        updatePreview();
+        document.getElementById('validation-msg').classList.add('hidden');
+      });
+    });
+
+    document.getElementById('recap-filter').addEventListener('change', renderRecap);
+  }
+
+  function applyConfig(config){
+    const cfg = { ...defaultConfig, ...config };
+    document.getElementById('app-title').textContent = cfg.app_title;
+    document.getElementById('app-subtitle').textContent = cfg.app_subtitle;
+    document.getElementById('footer-note').textContent = cfg.footer_note;
+  }
+
+  function renderAll(){
+    if (currentUser && currentUser.role === 'admin'){
+      renderSubjects();
+      renderStudents();
+      renderTeachers();
+      if (currentTab === 'input') renderInputTab();
+      if (currentTab === 'recap') renderRecap();
+    } else if (currentUser && currentUser.role === 'teacher'){
+      renderInputTab();
+      if (currentTab === 'teacher-recap') renderTeacherRecap();
+    }
+    updateUserInfo();
+  }
+
+  if (window.elementSdk){
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => { applyConfig(config); },
+      mapToCapabilities: () => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }),
+      mapToEditPanelValues: (config) => {
+        const cfg = { ...defaultConfig, ...config };
+        return new Map([
+          ['app_title', cfg.app_title],
+          ['app_subtitle', cfg.app_subtitle],
+          ['footer_note', cfg.footer_note]
+        ]);
+      }
+    });
+  }
+
+  (async () => {
+    const handler = {
+      onDataChanged(data){
+        allRecords = data || [];
+        renderAll();
+        if (!initialized){
+          initialized = true;
+          lucide.createIcons();
+        }
+      }
+    };
+    const res = await window.dataSdk.init(handler);
+    if (!res.isOk){
+      showToast('Gagal memuat data.', 'error');
+    }
+  })();
+
+  bindEvents();
+  lucide.createIcons();
+  applyConfig(defaultConfig);
+
+})();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f3a0cbe10a08740',t:'MTc3NzQyMTA3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
